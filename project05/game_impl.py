@@ -1,11 +1,23 @@
 from game_library import Board,Tile,Player
 class Game:
-    def __init__(self,board_data,players=[]) -> None:
+    def __init__(self,board_data,players_data=[]) -> None:
 
         self.board = Board()
         if board_data:
             self.board.process_board_data(board_data)
-        self.players = [Player(name) for name in players]if players else print("Enter Players: ")
+        self.setup_players=self.setup_players(players_data)
+
+    def setup_players(self, players_data):
+        players = []
+        for player_data in players_data:
+            # Assuming player_data already contains 'name', 'cash', 'shares', and 'tiles' in the correct format
+            player = Player(player_data['player'], player_data['cash'])
+            # Directly setting shares and tiles without parsing
+            player.shares = player_data['shares']
+            player.tiles = player_data['tiles']
+            players.append(player)
+        return players
+
 
     def singleton(self,row,col):
 

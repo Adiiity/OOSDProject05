@@ -70,6 +70,26 @@ class Board:
             print(' '.join(map(str, row)))
 
 class Player:
-    def __init__(self, name):
+    def __init__(self, name, cash=0):
         self.name = name
-        # Initialize other player attributes as needed
+        self.cash = cash
+        self.shares = []
+        self.tiles = []
+
+    def add_tile(self, tile):
+        self.tiles.append(tile)
+
+    def add_share(self, share):
+        self.shares.append(share)
+
+class Share:
+    def __init__(self, hotel_label, count):
+        self.hotel_label = hotel_label
+        self.count = count
+# class admin_state:
+#     def __init__(self):
+#         self.board = Board()
+#         self.players = []
+
+#     def add_player(self, player):
+#         self.players.append(player)
