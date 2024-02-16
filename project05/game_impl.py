@@ -1,19 +1,11 @@
-from game_library import Board,Tile,Hotel
+from game_library import Board,Tile,Player
 class Game:
-    def __init__(self,board_data) -> None:
+    def __init__(self,board_data,players=[]) -> None:
 
-        self.board=Board(board_data)
-
-        self.occupied_tiles=self.board.played_tiles.copy()
-        self.occupied_hotels = self.board.played_hotels.copy()
-        self.availableHotels = Hotel.valid_hotels
-        copyAvailableHotels = []
-        for hotel in self.availableHotels:
-            if hotel not in self.occupied_hotels:
-                copyAvailableHotels.append(hotel)
-
-        self.availableHotels = copyAvailableHotels
-
+        self.board = Board()
+        if board_data:
+            self.board.process_board_data(board_data)
+        self.players = [Player(name) for name in players]if players else print("Enter Players: ")
 
     def singleton(self,row,col):
 
@@ -24,7 +16,8 @@ class Game:
         if 0 <= row_index < self.board.rows and 0 <= col_index < self.board.cols:
             if self.board.board_matrix[row_index][col_index] == 0:  #checking if the tile is unoccupied
                 self.board.board_matrix[row_index][col_index] = 1
-                self.occupied_tiles[row_index,col_index] = None  #for now just keeping the value as None
+                self.board.played_tiles[row_index,col_index] = None  #for now just keeping the value as None
+                print("Singleton")
                 return "singleton"
             else:
                 return {"error" : "Tile is already played."}
@@ -79,7 +72,7 @@ class Game:
                 else:
                     occupied_neighbour = True
                     isSingleTile =self.singleTile(row_index,column_index,delRow,delCol,game_board,total_rows,total_cols)
-                    
+
                     if isSingleTile:
                         if label in self.availableHotels:
 
@@ -99,10 +92,10 @@ class Game:
                                 # change occupied tiles as well. add hotel label now
 
                                 # update given row and col
-                                self.occupied_tiles[row,column] = label
+                                self.board.playe_tiles[row,column] = label
                                 # update teh single neighbour tile
 
-                                self.occupied_tiles[letter_row,column_index + 1] = label
+                                self.board.played_tiles[letter_row,column_index + 1] = label
 
 
 
@@ -142,9 +135,9 @@ class Game:
 
 
         # Check if the tile is already played
-        if tile_tuple in self.occupied_tiles:
+        if tile_tuple in self.board.played_tiles:
             # If the tile is already associated with a hotel, raise an error
-            if self.occupied_tiles[tile_tuple] is not None:
+            if self.board.played_tiles[tile_tuple] is not None:
                 return {"error": "Tile is already played and is in a hotel chain."}
 
 
@@ -158,8 +151,8 @@ class Game:
         ]
         neighbor_hotels = set()
         for neighbor in neighbors:
-            if neighbor in self.occupied_tiles:
-                neighbor_hotel = self.occupied_tiles[neighbor]
+            if neighbor in self.board.played_tiles:
+                neighbor_hotel = self.board.played_tiles[neighbor]
                 if neighbor_hotel is not None:
                     neighbor_hotels.add(neighbor_hotel)
 
@@ -168,7 +161,7 @@ class Game:
         if len(neighbor_hotels) == 1:
             # Only one neighbor with the same hotel
             neighbor_hotel = neighbor_hotels.pop()
-            self.occupied_tiles[tile_tuple] = neighbor_hotel
+            self.board.played_tiles[tile_tuple] = neighbor_hotel
             self.occupied_hotels[neighbor_hotel].append(tile_tuple)
             return {"growing": neighbor_hotel}
 
@@ -207,7 +200,7 @@ class Game:
             # print("singleton")
         elif len(valid_neighbors) == 1:
             neighbor_row, neighbor_col = valid_neighbors[0]
-            neighbor_hotel = self.occupied_tiles.get((neighbor_row, neighbor_col))
+            neighbor_hotel = self.board.played_tiles.get((neighbor_row, neighbor_col))
             if neighbor_hotel in self.occupied_hotels:
                 self.growing(row, col, neighbor_hotel)
                 return {"growing": neighbor_hotel}
@@ -216,7 +209,7 @@ class Game:
                 return "founding"
 
         elif len(valid_neighbors) >= 2:
-            neighbor_hotels = [self.occupied_tiles.get(neighbor) for neighbor in valid_neighbors if self.occupied_tiles.get(neighbor)]
+            neighbor_hotels = [self.board.played_tiles.get(neighbor) for neighbor in valid_neighbors if self.board.played_tiles.get(neighbor)]
             unique_neighbor_hotels = list(set(neighbor_hotels))
 
             safe_hotels = [hotel for hotel in unique_neighbor_hotels if len(self.occupied_hotels[hotel]) >= 11]
@@ -225,7 +218,7 @@ class Game:
                 return {"impossible": "Cannot merge with a safe hotel."}
             if len(unique_neighbor_hotels) == 0:  # Added this condition to handle the case when there are no valid hotels
                 # No valid hotels among neighbors
-
+                print("Singleton")
                 return "singleton"
                 # print("singleton inspect")
             elif len(unique_neighbor_hotels) == 1:
@@ -273,3 +266,19 @@ class Game:
 
         return {"acquirer": acquirer_label, "acquired": acquired_labels}
 
+
+
+board_data={
+    "tiles": [
+      { "row": "C", "column": 3 },
+      { "row": "A", "column": 3 }
+    ],
+    "hotels": [
+      { "hotel": "American", "tiles": [{ "row": "C", "column": 3 }] },
+      { "hotel": "Imperial", "tiles": [{ "row": "A", "column": 3 }] }
+    ]
+  }
+
+game=Game(board_data)
+
+game.singleton("D",6)
