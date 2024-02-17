@@ -5,7 +5,15 @@ class Game:
         self.board = Board()
         if board_data:
             self.board.process_board_data(board_data)
+            print("GAME IMP -> PROCESSED BOARD DATA -> BOARD :", self.board.board_matrix)
+            print()
+            print("GAME IMPL -> PLAYED TILES -> ",self.board.played_tiles)
+            print()
+            print("GAME IMPL -> PLAYED HOTELS -> ",self.board.played_hotels)
+            print()
+            
         self.setup_players=self.setup_players(players_data)
+        
 
     def setup_players(self, players_data):
         players = []
@@ -16,6 +24,7 @@ class Game:
             player.shares = player_data['shares']
             player.tiles = player_data['tiles']
             players.append(player)
+        # print("PLAYERS -> ", players)
         return players
 
 
@@ -30,6 +39,8 @@ class Game:
                 self.board.board_matrix[row_index][col_index] = 1
                 self.board.played_tiles[row_index,col_index] = None  #for now just keeping the value as None
                 print("Singleton")
+                print("SINGLETON FUNCTION -> BOARD : ",self.board.board_matrix)
+                print()
                 return "singleton"
             else:
                 return {"error" : "Tile is already played."}
@@ -278,8 +289,27 @@ class Game:
 
         return {"acquirer": acquirer_label, "acquired": acquired_labels}
 
+# PLACE REQUEST:
+# Inputs are row/col/state and/or hotellabel
+# basically place are just actions like singleton, merge, grow,found
+# if we have an hotel name, one of the last 3 actions happen else we just have singleton
 
-
+    def place(self,row,col,hotel_name = None):
+        print("PLACE FUNCTION -> BOARD : ",self.board.board_matrix)
+        print()
+        if(hotel_name is None):
+            print("PLACE FUNCTION -> RUNNING SINGLETON FUNCTION: ")
+            print()
+            return self.singleton(row,col)
+        
+        elif (hotel_name is not None):
+            print("PLACE FUNCTION -> HOTEL NAME : ",hotel_name)
+            print()
+            possible_action =  self.inspect(row,col)
+            print("PLACE FUNCTION -> Possible Action : ",possible_action)
+            print()
+        
+    
 board_data={
     "tiles": [
       { "row": "C", "column": 3 },
@@ -293,4 +323,6 @@ board_data={
 
 game=Game(board_data)
 
-game.singleton("D",6)
+# game.singleton("D",6)
+# game.place("A",1)
+# game.place("A",4,"Imperial")
