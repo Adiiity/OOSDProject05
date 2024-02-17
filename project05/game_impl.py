@@ -5,19 +5,46 @@ class Game:
         self.board = Board()
         if board_data:
             self.board.process_board_data(board_data)
-        self.setup_players=self.setup_players(players_data)
+        self.players = [Player(name, 6000) for name in players_data]
 
-    def setup_players(self, players_data):
-        players = []
-        for player_data in players_data:
-            # Assuming player_data already contains 'name', 'cash', 'shares', and 'tiles' in the correct format
-            player = Player(player_data['player'], player_data['cash'])
-            # Directly setting shares and tiles without parsing
-            player.shares = player_data['shares']
-            player.tiles = player_data['tiles']
-            players.append(player)
-        return players
+    def generate_state(self):
+        board_state = self.generate_board_state()
+        players_state = self.generate_players_state()
+        return {"board": board_state, "players": players_state}
 
+    def generate_board_state(self):
+        hotels = []
+        standalone_tiles = []
+
+        # Process hotel tiles
+        for hotel_name, hotel_tiles in self.board.played_hotels.items():
+            if hotel_tiles:  # Ensure we only include hotels with tiles
+                formatted_tiles = [{"row": chr(row + ord('A')), "column": col + 1} for row, col in hotel_tiles]
+                hotels.append({"hotel": hotel_name, "tiles": formatted_tiles})
+
+        # Add tiles not part of any hotel
+        for (row_index, col_index), hotel_name in self.board.played_tiles.items():
+            board_tiles = {"row": chr(row_index + ord('A')), "column": col_index + 1}
+            standalone_tiles.append(board_tiles)
+
+        return {"tiles": standalone_tiles, "hotels": hotels}
+
+
+    def generate_players_state(self):
+        return [{
+            "player": player.name,
+            "cash": player.cash,
+            "shares": [{"share": share.hotel_label, "count": share.count} for share in player.shares],
+            "tiles": [{"row": tile.row, "column": tile.col} for tile in player.tiles]
+        } for player in self.players]
+
+
+    # def setup_players(self, player_names):
+    #     players = []
+    #     for name in player_names:
+    #         player = Player(name)
+    #         players.append(player)
+    #     return players
 
     def singleton(self,row,col):
 
@@ -291,6 +318,26 @@ board_data={
     ]
   }
 
-game=Game(board_data)
+# game=Game(board_data)
 
-game.singleton("D",6)
+# game.singleton("D",6)
+
+# Assuming board_data and player_names are provided as in the previous examples
+board_data = {
+    "tiles": [
+        {"row": "C", "column": 3},
+        {"row": "A", "column": 3}
+    ],
+    "hotels": [
+        {"hotel": "American", "tiles": [{"row": "C", "column": 3}]},
+        {"hotel": "Imperial", "tiles": [{"row": "A", "column": 3}]}
+    ]
+}
+player_names = ["Alice", "Bob"]
+
+# Initialize GameState with board data and player names
+game = Game(board_data, player_names)
+
+# Generate and print the current state of the game
+current_state = game.generate_state()
+print(current_state)
