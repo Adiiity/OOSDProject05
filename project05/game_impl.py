@@ -1,4 +1,5 @@
 from game_library import Board,Tile,Player, Share
+import random
 class Game:
     def __init__(self,board_data,players_data=[]) -> None:
 
@@ -441,10 +442,32 @@ class Game:
             print(f"Player: {currPlayer.name} bought share of {share}")
         currState = self.generate_state()
         return currState
+    
 
+    def done(self):
+        currPlayer = self.players[0]
+        rows = 9
+        columns = 12
+        if len(self.board.played_tiles) != 108: #total number of slots on board
+            #generate random tile that is not on the board
+            while True:
+                random_row = random.randint(0, rows - 1)
+                random_column = random.randint(1, columns)
+                random_tile = Tile(chr(ord('A') + random_row), random_column)
+                random_tuple = (random_row, random_column-1)
 
+                if random_tuple not in self.board.played_tiles:
+                    break
 
-
+            currPlayer.add_tile(random_tile)
+        #currPlayer.add_tile(random_tile)
+        self.players.append(self.players.pop(0))
+        currState = self.generate_state()
+        return currState
+        
+        
+        
+        
 # PLACE REQUEST:
 # Inputs are row/col/state and/or hotellabel
 # basically place are just actions like singleton, merge, grow,found
@@ -526,20 +549,31 @@ board_data={
 # game.singleton("D",6)
 
 # Assuming board_data and player_names are provided as in the previous examples
-# board_data = {
-#     "tiles": [
-#         {"row": "C", "column": 3},
-#         {"row": "A", "column": 3},
-#         {"row": "C", "column": 4},
-#         {"row": "A", "column": 4},
-#         {"row": "E", "column": 3},
-#         {"row": "E", "column": 4},
-#         {"row": "E", "column": 5},
-#         {"row": "E", "column": 6},
-#         {"row": "E", "column": 7},
-#         {"row": "E", "column": 8},
-#         {"row": "E", "column": 9},
-#         {"row": "E", "column": 10}
+board_data = {
+    "tiles": [
+        {"row": "C", "column": 3},
+        {"row": "A", "column": 3},
+        {"row": "C", "column": 4},
+        {"row": "A", "column": 4},
+        {"row": "E", "column": 3},
+        {"row": "E", "column": 4},
+        {"row": "E", "column": 5},
+        {"row": "E", "column": 6},
+        {"row": "E", "column": 7},
+        {"row": "E", "column": 8},
+        {"row": "E", "column": 9},
+        {"row": "E", "column": 10}
+
+    ],
+    "hotels": [
+        {"hotel": "American", "tiles": [{"row": "C", "column": 3}, {"row": "C", "column": 4}]},
+        {"hotel": "Imperial", "tiles": [{"row": "A", "column": 3}, {"row": "A", "column": 4}]},
+        {"hotel": "Continental", "tiles": [{"row": "E", "column": 3}, {"row": "E", "column": 4}
+        ,{"row": "E", "column": 5}, {"row": "E", "column": 6}, {"row": "E", "column": 7},
+        {"row": "E", "column": 8}, {"row": "E", "column": 9}, {"row": "E", "column": 10}]}
+    ]
+}
+player_names = ["Alice", "Bob"]
 
 #     ],
 #     "hotels": [
@@ -580,6 +614,23 @@ board_data={
 
 # game = Game(board_data, player_names)
 # game.merging("B", 4, "American")
+#----------DONE TEST-----------
+
+player_state = game.generate_players_state()
+print(player_state)
+print()
+game.done()
+print(game.generate_players_state())
+print()
+game.done()
+print(game.generate_players_state())
+print()
+game.done()
+print(game.generate_players_state())
+print()
+game.done()
+print(game.generate_players_state())
+print()
 
 # current_state = game.generate_state()
 # print(current_state)
