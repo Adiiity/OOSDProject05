@@ -495,6 +495,12 @@ class Game:
 # if we have an hotel name, one of the last 3 actions happen else we just have singleton
 
     def place(self,row,col,hotel_name = None):
+
+        for player in self.players[1:]:  # Skip the first player, who is assumed to be the current player
+            for tile in player.tiles:
+                if tile.row == row and tile.col == int(col):  # Ensure col is compared as an integer
+                    return {"Error": "Tile is already owned by another player"}
+
         print("PLACE FUNCTION -> BOARD : ",self.board.board_matrix)
         print()
         if(hotel_name is None):
@@ -528,7 +534,7 @@ class Game:
 
         elif (hotel_name is not None):
             if hotel_name not in self.availableHotels:
-                return {"Error": "Invalid hotel name"} 
+                return {"Error": "Invalid hotel name"}
             print("PLACE FUNCTION -> HOTEL NAME : ",hotel_name)
             print()
             possible_action =  self.inspect(row,col)
