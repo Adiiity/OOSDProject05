@@ -354,24 +354,24 @@ class Game:
         #check if count is valid
         shareCount = len(shares)
         if shareCount < 1:
-            print("short worked")
+            #print("short worked")
             return {"error" : "Cannot purchase less than 1 share"}
         elif shareCount > 3:
-            print("long worked")
+            #print("long worked")
             return {"error" : "Cannot purchase more than 3 shares"}
         
         #go through labels and purchase if possible
         for share in shares:
             if len(self.board.played_hotels[share]) < 2:
-                print("Short hotel worked")
+                #print("Short hotel worked")
                 return {"error" : "Not valid hotel to purchase shares of"}
             price = self.getHotelPrice(share)
             #print(share, price)
             if currPlayer.cash < price:
-                print("less cash worked")
+                #print("less cash worked")
                 return {"error" : "Not enough cash to purchase share"}
             if self.available_shares[share] <= 0:
-                print("0 worked ")
+                #print("0 worked ")
                 return {"error" : "Not enough shares to purchase"}
 
             currPlayer.add_share(share)
