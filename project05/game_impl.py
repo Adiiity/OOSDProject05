@@ -428,18 +428,19 @@ class Game:
         currPlayer = self.players[0]
         rows = 9
         columns = 12
-        #generate random tile that is not on the board
-        while True:
-            random_row = random.randint(0, rows - 1)
-            random_column = random.randint(1, columns)
-            
-            random_tile = Tile(chr(ord('A') + random_row), random_column)
-            
-            random_tuple = (random_row, random_column-1)
-            if random_tuple not in self.board.played_tiles:
-                break
+        if len(self.board.played_tiles) != 108: #total number of slots on board
+            #generate random tile that is not on the board
+            while True:
+                random_row = random.randint(0, rows - 1)
+                random_column = random.randint(1, columns)
+                random_tile = Tile(chr(ord('A') + random_row), random_column)
+                random_tuple = (random_row, random_column-1)
 
-        currPlayer.add_tile(random_tile)
+                if random_tuple not in self.board.played_tiles:
+                    break
+
+            currPlayer.add_tile(random_tile)
+        #currPlayer.add_tile(random_tile)
         self.players.append(self.players.pop(0))
         currState = self.generate_state()
         return currState
@@ -568,7 +569,7 @@ labels = ["American", "Imperial", "Continental"]
 #print(current_state)
 
 #----------DONE TEST-----------
-'''
+
 player_state = game.generate_players_state()
 print(player_state)
 print()
@@ -584,7 +585,7 @@ print()
 game.done()
 print(game.generate_players_state())
 print()
-'''
+
 
 ''' JAYANTH TEST DATA. DO NOT DELETE'''
 
