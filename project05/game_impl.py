@@ -400,5 +400,30 @@ board_data={
       
     ]
   }
+game=Game(board_data)
+
+# ans = game.singleton("D",6)
+# ONE NEIGHBOR
+# ans = game.place("H",1)
+# ans = game.place("H",7)
+# ans = game.place("A",4)
+
+
+# Multiple NEIGHBOR
+# ans = game.place("H",1)
+# ans = game.place("B",3)
+
+# with labels only merge,grow, found is done
+# grow
+# ans = game.place("B",3,"Imperial")
+# found
+ans = game.place("D",6,"Sackson")
 # merge
+# ans = game.place("B",3,"American")
+print(ans)
+
+
+
+print(game.board.board_matrix)
+print(game.board.played_hotels)
 
