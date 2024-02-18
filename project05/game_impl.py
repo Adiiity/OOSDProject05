@@ -1,11 +1,34 @@
-from game_library import Board,Tile,Player
+from game_library import Board,Tile,Player, Share
 class Game:
     def __init__(self,board_data,players_data=[]) -> None:
 
         self.board = Board()
         if board_data:
             self.board.process_board_data(board_data)
+            #change back to 6000
         self.players = [Player(name, 6000) for name in players_data]
+
+        #setup price table
+        self.hotel_tiers = {
+            "Worldwide": "Tier1",
+            "Sackson": "Tier1",
+            "Festival": "Tier2",
+            "Imperial": "Tier2",
+            "American": "Tier2",
+            "Continental": "Tier3",
+            "Tower": "Tier3"
+        }
+
+        self.pricing_table = {
+            "Tier1": {2: 200, 3: 300, 4: 400, 5: 500, 6: 600, 11: 700, 21: 800, 31: 900, 41: 1000},
+            "Tier2": {2: 300, 3: 400, 4: 500, 5: 600, 6: 700, 11: 800, 21: 900, 31: 1000, 41: 1100},
+            "Tier3": {2: 400, 3: 500, 4: 600, 5: 700, 6: 800, 11: 900, 21: 1000, 31: 1100, 41: 1200}
+        }
+
+        self.available_shares = {
+            "American" : 25, "Continental" : 25, "Festival" : 25, "Imperial" : 25, 
+            "Sackson" : 25, "Tower" : 25, "Worldwide" : 25
+        }
 
     def generate_state(self):
         board_state = self.generate_board_state()
@@ -304,9 +327,61 @@ class Game:
 
 
         return {"acquirer": acquirer_label, "acquired": acquired_labels}
+    
 
+    def getHotelPrice(self, label: str):
+        hotelCount = len(self.board.played_hotels[label])
+        #print(hotelCount)
+        if hotelCount < 2:
+            return {"error" : "Not valid hotel to purchase shares of"}
+        tier = self.hotel_tiers.get(label)
+        #print(tier)
+        if tier is not None:
+            # Get the pricing table for the specified tier
+            tier_prices = self.pricing_table.get(tier)
+            #print(tier_prices)
+            if tier_prices is not None:
+                # Find the row with the first number smaller or equal to the number of tiles
+                price = next((price for size, price in sorted(tier_prices.items(), reverse=True) if size <= hotelCount), None)
+                #print(price)
+                if price is not None:
+                   return price
+    
 
+    def buy(self, shares: list, player_list: list):
+        currPlayer = self.players[0]
 
+        #check if count is valid
+        shareCount = len(shares)
+        if shareCount < 1:
+            #print("short worked")
+            return {"error" : "Cannot purchase less than 1 share"}
+        elif shareCount > 3:
+            #print("long worked")
+            return {"error" : "Cannot purchase more than 3 shares"}
+        
+        #go through labels and purchase if possible
+        for share in shares:
+            if len(self.board.played_hotels[share]) < 2:
+                #print("Short hotel worked")
+                return {"error" : "Not valid hotel to purchase shares of"}
+            price = self.getHotelPrice(share)
+            #print(share, price)
+            if currPlayer.cash < price:
+                #print("less cash worked")
+                return {"error" : "Not enough cash to purchase share"}
+            if self.available_shares[share] <= 0:
+                #print("0 worked ")
+                return {"error" : "Not enough shares to purchase"}
+
+            currPlayer.add_share(Share(share, 1)) #init share
+            currPlayer.cash = currPlayer.cash - price
+            self.available_shares[share] -= 1
+            print(f"Player: {currPlayer.name} bought share of {share}")
+        currState = self.generate_state()
+        return currState
+        
+'''
 board_data={
     "tiles": [
       { "row": "C", "column": 3 },
@@ -317,7 +392,7 @@ board_data={
       { "hotel": "Imperial", "tiles": [{ "row": "A", "column": 3 }] }
     ]
   }
-
+'''
 # game=Game(board_data)
 
 # game.singleton("D",6)
@@ -326,11 +401,25 @@ board_data={
 board_data = {
     "tiles": [
         {"row": "C", "column": 3},
-        {"row": "A", "column": 3}
+        {"row": "A", "column": 3},
+        {"row": "C", "column": 4},
+        {"row": "A", "column": 4},
+        {"row": "E", "column": 3},
+        {"row": "E", "column": 4},
+        {"row": "E", "column": 5},
+        {"row": "E", "column": 6},
+        {"row": "E", "column": 7},
+        {"row": "E", "column": 8},
+        {"row": "E", "column": 9},
+        {"row": "E", "column": 10}
+
     ],
     "hotels": [
-        {"hotel": "American", "tiles": [{"row": "C", "column": 3}]},
-        {"hotel": "Imperial", "tiles": [{"row": "A", "column": 3}]}
+        {"hotel": "American", "tiles": [{"row": "C", "column": 3}, {"row": "C", "column": 4}]},
+        {"hotel": "Imperial", "tiles": [{"row": "A", "column": 3}, {"row": "A", "column": 4}]},
+        {"hotel": "Continental", "tiles": [{"row": "E", "column": 3}, {"row": "E", "column": 4}
+        ,{"row": "E", "column": 5}, {"row": "E", "column": 6}, {"row": "E", "column": 7},
+        {"row": "E", "column": 8}, {"row": "E", "column": 9}, {"row": "E", "column": 10}]}
     ]
 }
 player_names = ["Alice", "Bob"]
@@ -338,6 +427,10 @@ player_names = ["Alice", "Bob"]
 # Initialize GameState with board data and player names
 game = Game(board_data, player_names)
 
+labels = ["American", "Imperial", "Continental"]
+print(game.buy(labels, player_names))
+#print(game.available_shares)
+#print(game.players[0].shares)
 # Generate and print the current state of the game
-current_state = game.generate_state()
-print(current_state)
+#current_state = game.generate_state()
+#print(current_state)
