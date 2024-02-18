@@ -1,4 +1,4 @@
-from game_library import Board,Tile,Player
+from game_library import Board,Tile,Player, Share
 class Game:
     def __init__(self,board_data,players_data=[]) -> None:
 
@@ -374,11 +374,13 @@ class Game:
                 #print("0 worked ")
                 return {"error" : "Not enough shares to purchase"}
 
-            currPlayer.add_share(share)
+            currPlayer.add_share(Share(share, 1)) #init share
             currPlayer.cash = currPlayer.cash - price
             self.available_shares[share] -= 1
             print(f"Player: {currPlayer.name} bought share of {share}")
-
+        currState = self.generate_state()
+        return currState
+        
 
 '''
 board_data={
@@ -426,10 +428,10 @@ player_names = ["Alice", "Bob"]
 # Initialize GameState with board data and player names
 game = Game(board_data, player_names)
 
-labels = ["American", "Continental"]
-game.buy(labels, player_names)
+labels = ["American", "Imperial", "Continental"]
+print(game.buy(labels, player_names))
 #print(game.available_shares)
-print(game.players[0].cash)
+#print(game.players[0].shares)
 # Generate and print the current state of the game
 #current_state = game.generate_state()
 #print(current_state)
