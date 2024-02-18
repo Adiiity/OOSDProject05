@@ -1,4 +1,5 @@
 from game_library import Board,Tile,Player, Share
+import random
 class Game:
     def __init__(self,board_data,players_data=[]) -> None:
 
@@ -421,6 +422,27 @@ class Game:
             print(f"Player: {currPlayer.name} bought share of {share}")
         currState = self.generate_state()
         return currState
+    
+
+    def done(self):
+        currPlayer = self.players[0]
+        rows = 9
+        columns = 12
+        #generate random tile that is not on the board
+        while True:
+            random_row = random.randint(0, rows - 1)
+            random_column = random.randint(1, columns)
+            
+            random_tile = Tile(chr(ord('A') + random_row), random_column)
+            
+            random_tuple = (random_row, random_column-1)
+            if random_tuple not in self.board.played_tiles:
+                break
+
+        currPlayer.add_tile(random_tile)
+        self.players.append(self.players.pop(0))
+        currState = self.generate_state()
+        return currState
         
         
         
@@ -530,20 +552,39 @@ board_data = {
         {"row": "E", "column": 8}, {"row": "E", "column": 9}, {"row": "E", "column": 10}]}
     ]
 }
-player_names = ["Alice", "Bob"]
+player_names = ["Alice", "Bob", "Jim", "Joe"]
 
 # # Initialize GameState with board data and player names
 game = Game(board_data, player_names)
 
+
+#-----------BUY TEST-----------
 labels = ["American", "Imperial", "Continental"]
-print(game.buy(labels, player_names))
+#print(game.buy(labels, player_names))
 #print(game.available_shares)
 #print(game.players[0].shares)
 # Generate and print the current state of the game
 #current_state = game.generate_state()
 #print(current_state)
 
-
+#----------DONE TEST-----------
+'''
+player_state = game.generate_players_state()
+print(player_state)
+print()
+game.done()
+print(game.generate_players_state())
+print()
+game.done()
+print(game.generate_players_state())
+print()
+game.done()
+print(game.generate_players_state())
+print()
+game.done()
+print(game.generate_players_state())
+print()
+'''
 
 ''' JAYANTH TEST DATA. DO NOT DELETE'''
 
