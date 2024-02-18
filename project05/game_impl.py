@@ -5,12 +5,15 @@ class Game:
         self.board = Board()
         if board_data:
             self.board.process_board_data(board_data)
+            self.availableHotels = ["American", "Continental", "Festival", "Imperial", "Sackson","Tower", "Worldwide"]
             print("GAME IMP -> PROCESSED BOARD DATA -> BOARD :", self.board.board_matrix)
             print()
+            
             print("GAME IMPL -> PLAYED TILES -> ",self.board.played_tiles)
             print()
             print("GAME IMPL -> PLAYED HOTELS -> ",self.board.played_hotels)
             print()
+            
             
         self.setup_players=self.setup_players(players_data)
         
@@ -97,25 +100,23 @@ class Game:
                     isSingleTile =self.singleTile(row_index,column_index,delRow,delCol,game_board,total_rows,total_cols)
 
                     if isSingleTile:
+                        print("SINGLE TILE")
                         if label in self.availableHotels:
 
                             # make the given indices by user as tile
-                            self.singleton(row,column)
-
-
-                            if label not in self.occupied_hotels:
+                                self.singleton(row,column)
                                 # create a key with hotel name
-                                self.occupied_hotels[label] = []
+                                self.board.played_hotels[label] = []
                                 letter_row_ascii_number = ord('A') + row_index
                                 letter_row = chr(letter_row_ascii_number)
                                 # add the given tile and the single tile to this key
-                                self.occupied_hotels[label].append((letter_row,column_index + 1))
-                                self.occupied_hotels[label].append((row,column))
+                                self.board.played_hotels[label].append((letter_row,column_index + 1))
+                                self.board.played_hotels[label].append((row,column))
 
                                 # change occupied tiles as well. add hotel label now
 
                                 # update given row and col
-                                self.board.playe_tiles[row,column] = label
+                                self.board.played_tiles[row,column] = label
                                 # update teh single neighbour tile
 
                                 self.board.played_tiles[letter_row,column_index + 1] = label
@@ -125,15 +126,15 @@ class Game:
                                 # remove the label from available hotels
                                 self.availableHotels.remove(label)
 
-
-                            return "founding"
+                                print(game.board.played_hotels)
+                                print(game.board.played_tiles)
+                                return "founding"
                     # If there are no available hotel chains, the player can place the tile but cannot found a new hotel
-                    elif label not in self.availableHotels:
+                        elif label not in self.availableHotels:
                         # print("The given hotel label is not present in the available hotel chains. So adding tile only")
                         # we create and place the tile
-                        self.singleton(row,column)
-
-                        return
+                            print("UNAVAILABLE")
+                            return self.singleton(row,column)
 
             if occupied_neighbour == False:
 
@@ -152,13 +153,16 @@ class Game:
         return True
 
     def growing(self, row, col):
+        print("Inside growing func:",row,col)
         tile = Tile(str(row), str(col))
         row_index, col_index = tile.get_row_index(), tile.get_col_index()
         tile_tuple = (row_index, col_index)  # Use 0-based indices for internal tracking
-
-
+        print("Inside growing func -> board",self.board.board_matrix)
+        print("Inside growing func -> tile tuple",tile_tuple)
+        print("Inside growing func -> played tiles ",self.board.played_tiles)
         # Check if the tile is already played
         if tile_tuple in self.board.played_tiles:
+            print(True)
             # If the tile is already associated with a hotel, raise an error
             if self.board.played_tiles[tile_tuple] is not None:
                 return {"error": "Tile is already played and is in a hotel chain."}
@@ -185,7 +189,7 @@ class Game:
             # Only one neighbor with the same hotel
             neighbor_hotel = neighbor_hotels.pop()
             self.board.played_tiles[tile_tuple] = neighbor_hotel
-            self.occupied_hotels[neighbor_hotel].append(tile_tuple)
+            self.board.played_hotels[neighbor_hotel].append(tile_tuple)
             return {"growing": neighbor_hotel}
 
         elif len(neighbor_hotels) == 0:
@@ -213,46 +217,75 @@ class Game:
             (row_index, col_index - 1),  # Left
             (row_index, col_index + 1)   # Right
         ]
-
+        print(" NEIGBOUR INDICES", neighbors)
         # Filter valid neighbors within the board boundaries
-        valid_neighbors = [(r, c) for r, c in neighbors if 0 <= r < self.board.rows and 0 <= c < self.board.cols]
-
+        valid_neighbors = [(r, c) for r, c in neighbors if 0 <= r < self.board.rows and 0 <= c < self.board.cols and self.board.board_matrix[r][c] == 1]
+        print("VALID NEIGBOURS",valid_neighbors)
         if not valid_neighbors:
             self.singleton(row, col)
+            # print("SIngleton is running")
+            # print(row,col)
+            # print(row_index,col_index)
+            # print(self.board.played_tiles)
+            self.board.played_tiles.__delitem__(tile_tuple)
+            # print(self.board.played_tiles)
+                
             return "singleton"
             # print("singleton")
         elif len(valid_neighbors) == 1:
+            print("INSIDE THIS CODE")
             neighbor_row, neighbor_col = valid_neighbors[0]
             neighbor_hotel = self.board.played_tiles.get((neighbor_row, neighbor_col))
-            if neighbor_hotel in self.occupied_hotels:
-                self.growing(row, col, neighbor_hotel)
-                return {"growing": neighbor_hotel}
+            print("NEIGHBOR INDEX's HOTEL FOR GROW ACTION -> ", neighbor_hotel)
+            if neighbor_hotel in self.board.played_hotels:
+                # we run growing func to check the expected board.
+                self.growing(row, col)
+                # now the board is updated. must remove that update cos inspect doesnt change the board state permanently.
+                print("Test")
+                
+                # remove from played hotels. remove from played tiles
+                # print(self.board.played_hotels)
+                self.board.played_hotels[neighbor_hotel].remove(tile_tuple)
+                # print(self.board.played_hotels)
+                # print(self.board.played_tiles)
+                self.board.played_tiles.__delitem__(tile_tuple)
+                # print(self.board.played_tiles)
+                
+                # return {"growing": neighbor_hotel}
+                return "growing"
+
 
             else:
                 return "founding"
 
         elif len(valid_neighbors) >= 2:
+            # Founding not possible since we have more than 1 neighbour
+            print("INSIDE THIS CODE")
             neighbor_hotels = [self.board.played_tiles.get(neighbor) for neighbor in valid_neighbors if self.board.played_tiles.get(neighbor)]
             unique_neighbor_hotels = list(set(neighbor_hotels))
 
-            safe_hotels = [hotel for hotel in unique_neighbor_hotels if len(self.occupied_hotels[hotel]) >= 11]
+            safe_hotels = [hotel for hotel in unique_neighbor_hotels if len(self.board.played_hotels[hotel]) >= 11]
             if safe_hotels:
-
                 return {"impossible": "Cannot merge with a safe hotel."}
             if len(unique_neighbor_hotels) == 0:  # Added this condition to handle the case when there are no valid hotels
                 # No valid hotels among neighbors
-                print("Singleton")
+                # print(self.board.board_matrix)
+                # print("Singleton")
+                
                 return "singleton"
                 # print("singleton inspect")
             elif len(unique_neighbor_hotels) == 1:
                 # All neighbors belong to the same hotel
                 acquirer_label = unique_neighbor_hotels[0]
-                return {"growing": acquirer_label}
+                # print(self.board.board_matrix)
+                # print("growing")
+                # return {"growing": acquirer_label}
+                return "growing"
 
 
             else:
                 # Different hotels among neighbors, determine acquirer and acquired
-                acquirer_label = max(unique_neighbor_hotels, key=lambda x: len(self.occupied_hotels.get(x, [])))
+                acquirer_label = max(unique_neighbor_hotels, key=lambda x: len(self.board.played_hotels.get(x, [])))
                 acquired_labels = [hotel for hotel in unique_neighbor_hotels if hotel != acquirer_label]
 
 
@@ -298,31 +331,93 @@ class Game:
         print("PLACE FUNCTION -> BOARD : ",self.board.board_matrix)
         print()
         if(hotel_name is None):
-            print("PLACE FUNCTION -> RUNNING SINGLETON FUNCTION: ")
+            print("PLACE FUNCTION WITH NO HOTEL LABEL")
             print()
-            return self.singleton(row,col)
-        
+            possible_action =  self.inspect(row,col)
+            
+            print("PLACE FUNCTION WITH NO HOTEL LABEL-> Possible Action : ",possible_action)
+            execute_action = None
+            print(type(possible_action))
+            # print(possible_action.keys())
+            print()
+            
+            # for action in possible_action.keys():
+            #     execute_action = action
+                
+            # if the possible action is singleton
+            if(possible_action == 'singleton'):
+                return self.singleton(row, col)
+            
+            # if the possible action is growing
+            elif(possible_action == 'growing'):
+                print("GIVEN ROW:",row,col)
+                print("Board after inspect:",self.board.board_matrix)
+                return self.growing(row, col)
+            
+            # if the possible action is foundnig
+            elif(possible_action == 'founding'):
+                message = {"msg" : "Founding action is possible."}
+                return message
+            
         elif (hotel_name is not None):
             print("PLACE FUNCTION -> HOTEL NAME : ",hotel_name)
             print()
             possible_action =  self.inspect(row,col)
             print("PLACE FUNCTION -> Possible Action : ",possible_action)
             print()
+            if(possible_action == 'singleton'):
+                return self.singleton(row, col)
+            
+            # if the possible action is growing
+            elif(possible_action == 'growing'):
+                print("GIVEN ROW:",row,col)
+                print("Board after inspect:",self.board.board_matrix)
+                return self.growing(row, col)
+            
+            # if the possible action is foundnig
+            elif(possible_action == 'founding'):
+                print("GIVEN ROW:",row,col)
+                print("Board after inspect:",self.board.board_matrix)
+                return self.founding(row,col,hotel_name,self.board.board_matrix)
         
     
 board_data={
     "tiles": [
-      { "row": "C", "column": 3 },
-      { "row": "A", "column": 3 }
+        { "row": "D", "column":5 },
+      { "row": "C", "column": 7 },
+      { "row": "A", "column": 3 },
+      { "row": "C", "column": 3 }
+      ,{ "row": "G", "column": 1 }
+      ,{ "row": "I", "column": 1 }
     ],
     "hotels": [
-      { "hotel": "American", "tiles": [{ "row": "C", "column": 3 }] },
-      { "hotel": "Imperial", "tiles": [{ "row": "A", "column": 3 }] }
+      { "hotel": "American", "tiles": [{ "row": "C", "column": 7 }] },
+      { "hotel": "Imperial", "tiles": [{ "row": "A", "column": 3 },{ "row": "C", "column": 3 }] }
+      
     ]
   }
 
 game=Game(board_data)
 
-# game.singleton("D",6)
-# game.place("A",1)
-# game.place("A",4,"Imperial")
+# ans = game.singleton("D",6)
+# ONE NEIGHBOR
+# ans = game.place("H",1)
+# ans = game.place("H",7)
+# ans = game.place("A",4)
+
+
+# Multiple NEIGHBOR
+# ans = game.place("H",1)
+# ans = game.place("B",3)
+
+# with labels only merge,grow, found is done
+# grow
+# ans = game.place("B",3,"Imperial")
+# found
+ans = game.place("D",6,"Sackson")
+print(ans)
+
+
+
+print(game.board.board_matrix)
+print(game.board.played_hotels)
