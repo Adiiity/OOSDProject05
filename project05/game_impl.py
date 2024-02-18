@@ -291,32 +291,45 @@ class Game:
         if safe_hotels:
             return {"impossible": "Cannot merge with a safe hotel."}
 
-        acquirer_label = max(neighbor_hotels, key=lambda hotel: len(self.board.played_hotels[hotel]) if hotel else 0)
-        if not acquirer_label or acquirer_label != input_label:
-            # print("error")
-            return {"impossible": "Input label does not match the acquirer label or no valid merger found."}
+        # Find the max length of neighboring hotels
+        max_length = max(len(self.board.played_hotels[hotel]) for hotel in neighbor_hotels) if neighbor_hotels else 0
+        max_hotels = [hotel for hotel in neighbor_hotels if len(self.board.played_hotels[hotel]) == max_length]
+        print("max hotels: ",max_hotels)
+        # Handle tie situation
+        if len(max_hotels) > 1:
+            if not input_label:
+                return {"error": "Tiebreaker needed between " + ", ".join(max_hotels)}
+            elif input_label not in max_hotels:
+                return {"impossible": f"The given hotel name '{input_label}' cannot be the acquirer."}
 
-        acquired_labels = [hotel for hotel in neighbor_hotels if hotel and hotel != acquirer_label]
+        # If there's no tie or input_label is one of the max hotels
+        acquirer_label = input_label if input_label in max_hotels else max_hotels[0] if max_hotels else None
+        print("acquirer: ",acquirer_label)
+        if not acquirer_label:  # This also catches the case where max_hotels might be empty
+            return {"impossible": "No valid merger found."}
+        print("Neighbor: ",neighbor_hotels)
+        acquired_labels = [hotel for hotel in neighbor_hotels if hotel != acquirer_label]
+        print("acquired : ",acquired_labels)
 
+        # Perform the merger
         for acquired_label in acquired_labels:
             self.board.played_hotels[acquirer_label].extend(self.board.played_hotels[acquired_label])
             del self.board.played_hotels[acquired_label]
-
-
+        print("acquirer: ", acquirer_label, "acquired: ", acquired_labels)
         return {"acquirer": acquirer_label, "acquired": acquired_labels}
 
 
 
-board_data={
-    "tiles": [
-      { "row": "C", "column": 3 },
-      { "row": "A", "column": 3 }
-    ],
-    "hotels": [
-      { "hotel": "American", "tiles": [{ "row": "C", "column": 3 }] },
-      { "hotel": "Imperial", "tiles": [{ "row": "A", "column": 3 }] }
-    ]
-  }
+# board_data={
+#     "tiles": [
+#       { "row": "C", "column": 3 },
+#       { "row": "A", "column": 3 }
+#     ],
+#     "hotels": [
+#       { "hotel": "American", "tiles": [{ "row": "C", "column": 3 }] },
+#       { "hotel": "Imperial", "tiles": [{ "row": "A", "column": 3 }] }
+#     ]
+#   }
 
 # game=Game(board_data)
 
@@ -325,19 +338,24 @@ board_data={
 # Assuming board_data and player_names are provided as in the previous examples
 board_data = {
     "tiles": [
-        {"row": "C", "column": 3},
-        {"row": "A", "column": 3}
+        {"row": "B", "column": 2}, {"row": "B", "column": 3},  # American
+
+        {"row": "B", "column": 5}, {"row": "D", "column": 6},  # Continental
+
+        {"row": "C", "column": 4}  # Imperial
     ],
     "hotels": [
-        {"hotel": "American", "tiles": [{"row": "C", "column": 3}]},
-        {"hotel": "Imperial", "tiles": [{"row": "A", "column": 3}]}
+        {"hotel": "American", "tiles": [{"row": "B", "column": 2}, {"row": "B", "column": 3} #, {"row": "B", "column": 4}, {"row": "B", "column": 5}
+                                        ]},
+        {"hotel": "Continental", "tiles": [{"row": "B", "column": 5}, {"row": "D", "column": 6}]},
+        {"hotel": "Imperial", "tiles": [{"row": "C", "column": 4}]}
     ]
 }
 player_names = ["Alice", "Bob"]
 
 # Initialize GameState with board data and player names
 game = Game(board_data, player_names)
-
+game.merging("B", 4, "American")
 # Generate and print the current state of the game
 current_state = game.generate_state()
 print(current_state)
