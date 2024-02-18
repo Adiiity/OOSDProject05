@@ -74,7 +74,7 @@ class Board:
 class Player:
     def __init__(self, name, cash=0):
         self.name = name
-        self.cash = 6000
+        self.cash = cash
         self.shares = []
         self.tiles = []
 
