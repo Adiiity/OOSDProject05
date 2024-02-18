@@ -527,6 +527,8 @@ class Game:
                 return message
 
         elif (hotel_name is not None):
+            if hotel_name not in self.availableHotels:
+                return {"Error": "Invalid hotel name"} 
             print("PLACE FUNCTION -> HOTEL NAME : ",hotel_name)
             print()
             possible_action =  self.inspect(row,col)
