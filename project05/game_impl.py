@@ -3,16 +3,16 @@ class Game:
     def __init__(self,board_data,players_data=[]) -> None:
 
         self.board = Board()
-        
+
         if board_data:
             self.board.process_board_data(board_data)
             # get valid hotels
             self.availableHotels = self.board.valid_hotels
-            
-            
+
+
             #change back to 6000
         self.players = [Player(name, 6000) for name in players_data]
-        
+
 
         #setup price table
         self.hotel_tiers = {
@@ -32,7 +32,7 @@ class Game:
         }
 
         self.available_shares = {
-            "American" : 25, "Continental" : 25, "Festival" : 25, "Imperial" : 25, 
+            "American" : 25, "Continental" : 25, "Festival" : 25, "Imperial" : 25,
             "Sackson" : 25, "Tower" : 25, "Worldwide" : 25
         }
 
@@ -264,7 +264,7 @@ class Game:
         valid_neighbors = [(r, c) for r, c in neighbors if 0 <= r < self.board.rows and 0 <= c < self.board.cols and self.board.board_matrix[r][c] == 1]
         print("VALID NEIGBOURS",valid_neighbors)
         if not valid_neighbors:
-            
+
             print("SIngleton is running with no valid neighbors")
             self.singleton(row, col)
             print(row,col)
@@ -273,7 +273,7 @@ class Game:
             self.board.played_tiles.__delitem__(tile_tuple)
             self.board.board_matrix[row_index][col_index] = 0
             print(self.board.played_tiles)
-                
+
             return "singleton"
             # print("singleton")
         elif len(valid_neighbors) == 1:
@@ -286,7 +286,7 @@ class Game:
                 self.growing(row, col)
                 # now the board is updated. must remove that update cos inspect doesnt change the board state permanently.
                 print("Test")
-                
+
                 # remove from played hotels. remove from played tiles
                 # print(self.board.played_hotels)
                 self.board.played_hotels[neighbor_hotel].remove(tile_tuple)
@@ -296,7 +296,7 @@ class Game:
                 print("Grow TEST:",self.board.board_matrix[row_index][col_index] )
                 # self.board.board_matrix[row_index][col_index] = 0
                 # print(self.board.played_tiles)
-                
+
                 # return {"growing": neighbor_hotel}
                 return "growing"
 
@@ -317,7 +317,7 @@ class Game:
                 # No valid hotels among neighbors
                 # print(self.board.board_matrix)
                 # print("Singleton")
-                
+
                 return "singleton"
                 # print("singleton inspect")
             elif len(unique_neighbor_hotels) == 1:
@@ -335,7 +335,7 @@ class Game:
                 acquired_labels = [hotel for hotel in unique_neighbor_hotels if hotel != acquirer_label]
                 # print("MERGER")
                 return "merging"
-                
+
                 # return {"acquirer": acquirer_label, "acquired": acquired_labels}
 
 
@@ -349,26 +349,46 @@ class Game:
             (row_index, col_index - 1),
             (row_index, col_index + 1)
         ]
+        # checking for neighboring tiles and its hotel chains
         neighbor_hotels = {self.board.played_tiles.get(neighbor) for neighbor in neighbors if neighbor in self.board.played_tiles}
 
         safe_hotels = [hotel for hotel in neighbor_hotels if hotel and len(self.board.played_hotels[hotel]) >= 11]
         if safe_hotels:
             return {"impossible": "Cannot merge with a safe hotel."}
 
-        acquirer_label = max(neighbor_hotels, key=lambda hotel: len(self.board.played_hotels[hotel]) if hotel else 0)
-        if not acquirer_label or acquirer_label != input_label:
-            # print("error")
-            return {"impossible": "Input label does not match the acquirer label or no valid merger found."}
+        # looking for the max length of neighboring hotels, if no neighbor hotels available then set it to 0
+        max_length = max(len(self.board.played_hotels[hotel]) for hotel in neighbor_hotels) if neighbor_hotels else 0
 
-        acquired_labels = [hotel for hotel in neighbor_hotels if hotel and hotel != acquirer_label]
+        # Could be more than one hotels with same maximum hotel chain length, so creating a list of max hotels
+        max_hotels = [hotel for hotel in neighbor_hotels if len(self.board.played_hotels[hotel]) == max_length]
+        # print("max hotels: ",max_hotels)
 
+        # checking if merge conflicts
+        if len(max_hotels) > 1:
+            if not input_label:
+                return {"error": "Tiebreaker needed between " + ", ".join(max_hotels)}
+            elif input_label not in max_hotels:
+                return {"impossible": f"The given hotel name '{input_label}' cannot be the acquirer."}
+
+        # If there's no tie or input_label is one of the max hotels
+        acquirer_label = input_label if input_label in max_hotels else max_hotels[0] if max_hotels else None
+        print("acquirer: ",acquirer_label)
+
+        # this also catches the case where max_hotels might be empty
+        if not acquirer_label:
+            return {"impossible": "No valid merger found."}
+        # print("Neighbor: ",neighbor_hotels)
+
+        acquired_labels = [hotel for hotel in neighbor_hotels if hotel != acquirer_label]
+        # print("acquired : ",acquired_labels)
+
+        # merging here
         for acquired_label in acquired_labels:
             self.board.played_hotels[acquirer_label].extend(self.board.played_hotels[acquired_label])
             del self.board.played_hotels[acquired_label]
-
-
+        # print("acquirer: ", acquirer_label, "acquired: ", acquired_labels)
         return {"acquirer": acquirer_label, "acquired": acquired_labels}
-    
+
 
     def getHotelPrice(self, label: str):
         hotelCount = len(self.board.played_hotels[label])
@@ -387,7 +407,7 @@ class Game:
                 #print(price)
                 if price is not None:
                    return price
-    
+
 
     def buy(self, shares: list, player_list: list):
         currPlayer = self.players[0]
@@ -400,7 +420,7 @@ class Game:
         elif shareCount > 3:
             #print("long worked")
             return {"error" : "Cannot purchase more than 3 shares"}
-        
+
         #go through labels and purchase if possible
         for share in shares:
             if len(self.board.played_hotels[share]) < 2:
@@ -421,10 +441,10 @@ class Game:
             print(f"Player: {currPlayer.name} bought share of {share}")
         currState = self.generate_state()
         return currState
-        
-        
-        
-        
+
+
+
+
 # PLACE REQUEST:
 # Inputs are row/col/state and/or hotellabel
 # basically place are just actions like singleton, merge, grow,found
@@ -437,23 +457,23 @@ class Game:
             print("PLACE FUNCTION WITH NO HOTEL LABEL")
             print()
             possible_action =  self.inspect(row,col)
-            
+
             print("PLACE FUNCTION WITH NO HOTEL LABEL-> Possible Action : ",possible_action)
 
             print()
-                            
+
             # if the possible action is singleton
             if(possible_action == 'singleton'):
                 print("I am here")
                 print(self.board.played_tiles)
                 return self.singleton(row, col)
-            
+
             # if the possible action is growing
             elif(possible_action == 'growing'):
                 print("GIVEN ROW:",row,col)
                 print("Board after inspect:",self.board.board_matrix)
                 return self.growing(row, col)
-            
+
             # if the possible action is foundnig
             elif(possible_action == 'founding'):
                 message = {"msg" : "Founding action is possible."}
@@ -461,7 +481,7 @@ class Game:
             elif(possible_action == 'merging'):
                 message = {"msg" : "Merging action is possible if label is given."}
                 return message
-            
+
         elif (hotel_name is not None):
             print("PLACE FUNCTION -> HOTEL NAME : ",hotel_name)
             print()
@@ -470,13 +490,13 @@ class Game:
             print()
             if(possible_action == 'singleton'):
                 return self.singleton(row, col)
-            
+
             # if the possible action is growing
             elif(possible_action == 'growing'):
                 print("GIVEN ROW:",row,col)
                 print("Board after inspect:",self.board.board_matrix)
                 return self.growing(row, col)
-            
+
             # if the possible action is foundnig
             elif(possible_action == 'founding'):
                 print("GIVEN ROW:",row,col)
@@ -488,7 +508,7 @@ class Game:
                 return self.merging(row,col,hotel_name)
 
 
-        
+
 '''
 board_data={
     "tiles": [
@@ -506,44 +526,63 @@ board_data={
 # game.singleton("D",6)
 
 # Assuming board_data and player_names are provided as in the previous examples
-board_data = {
-    "tiles": [
-        {"row": "C", "column": 3},
-        {"row": "A", "column": 3},
-        {"row": "C", "column": 4},
-        {"row": "A", "column": 4},
-        {"row": "E", "column": 3},
-        {"row": "E", "column": 4},
-        {"row": "E", "column": 5},
-        {"row": "E", "column": 6},
-        {"row": "E", "column": 7},
-        {"row": "E", "column": 8},
-        {"row": "E", "column": 9},
-        {"row": "E", "column": 10}
+# board_data = {
+#     "tiles": [
+#         {"row": "C", "column": 3},
+#         {"row": "A", "column": 3},
+#         {"row": "C", "column": 4},
+#         {"row": "A", "column": 4},
+#         {"row": "E", "column": 3},
+#         {"row": "E", "column": 4},
+#         {"row": "E", "column": 5},
+#         {"row": "E", "column": 6},
+#         {"row": "E", "column": 7},
+#         {"row": "E", "column": 8},
+#         {"row": "E", "column": 9},
+#         {"row": "E", "column": 10}
 
-    ],
-    "hotels": [
-        {"hotel": "American", "tiles": [{"row": "C", "column": 3}, {"row": "C", "column": 4}]},
-        {"hotel": "Imperial", "tiles": [{"row": "A", "column": 3}, {"row": "A", "column": 4}]},
-        {"hotel": "Continental", "tiles": [{"row": "E", "column": 3}, {"row": "E", "column": 4}
-        ,{"row": "E", "column": 5}, {"row": "E", "column": 6}, {"row": "E", "column": 7},
-        {"row": "E", "column": 8}, {"row": "E", "column": 9}, {"row": "E", "column": 10}]}
-    ]
-}
-player_names = ["Alice", "Bob"]
+#     ],
+#     "hotels": [
+#         {"hotel": "American", "tiles": [{"row": "C", "column": 3}, {"row": "C", "column": 4}]},
+#         {"hotel": "Imperial", "tiles": [{"row": "A", "column": 3}, {"row": "A", "column": 4}]},
+#         {"hotel": "Continental", "tiles": [{"row": "E", "column": 3}, {"row": "E", "column": 4}
+#         ,{"row": "E", "column": 5}, {"row": "E", "column": 6}, {"row": "E", "column": 7},
+#         {"row": "E", "column": 8}, {"row": "E", "column": 9}, {"row": "E", "column": 10}]}
+#     ]
+# }
 
-# # Initialize GameState with board data and player names
-game = Game(board_data, player_names)
-
-labels = ["American", "Imperial", "Continental"]
-print(game.buy(labels, player_names))
+# labels = ["American", "Imperial", "Continental"]
+# print(game.buy(labels, player_names))
 #print(game.available_shares)
 #print(game.players[0].shares)
 # Generate and print the current state of the game
 #current_state = game.generate_state()
 #print(current_state)
 
+'''Merge Test Data'''
+# board_data = {
+#     "tiles": [
+#         {"row": "B", "column": 2}, {"row": "B", "column": 3},  # American
 
+#         {"row": "B", "column": 5}, {"row": "D", "column": 6},  # Continental
+
+#         {"row": "C", "column": 4}  # Imperial
+#     ],
+#     "hotels": [
+#         {"hotel": "American", "tiles": [{"row": "B", "column": 2}, {"row": "B", "column": 3} #, {"row": "B", "column": 4}, {"row": "B", "column": 5}
+#                                         ]},
+#         {"hotel": "Continental", "tiles": [{"row": "B", "column": 5}, {"row": "D", "column": 6}]},
+#         {"hotel": "Imperial", "tiles": [{"row": "C", "column": 4}]}
+#     ]
+# }
+# player_names = ["Alice", "Bob"]
+
+
+# game = Game(board_data, player_names)
+# game.merging("B", 4, "American")
+
+# current_state = game.generate_state()
+# print(current_state)
 
 ''' JAYANTH TEST DATA. DO NOT DELETE'''
 
@@ -559,7 +598,7 @@ print(game.buy(labels, player_names))
 #     "hotels": [
 #       { "hotel": "American", "tiles": [{ "row": "C", "column": 3 }] },
 #       { "hotel": "Imperial", "tiles": [{ "row": "A", "column": 3 },{ "row": "C", "column":7 }] }
-      
+
 #     ]
 #   }
 # game=Game(board_data)
