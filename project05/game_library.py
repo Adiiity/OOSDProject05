@@ -44,9 +44,9 @@ class Board:
                 # Directly add or update the hotel association without checking duplication
                 # Because all_tiles ensures no tile is processed more than once
                 self.add_tile_to_board(tile, hotel_name)
-        # print("played tiles: ",self.played_tiles)
-        # print("played hotels: ",self.played_hotels)
-
+        # print("GAME LIB -> PROCESS BOARD DATA -> BOARD :", self.board_matrix)
+        # print("GAME LIB -> PROCESS BOARD DATA -> HOTELS PLAYED :", self.played_hotels)
+        # print("GAME LIB -> PROCESS BOARD DATA -> TILES PLAYED :", self.played_tiles)
 
     def add_tile_to_board(self, tile, hotel_name=None):
         row_index, col_index = tile.get_row_index(), tile.get_col_index()
@@ -74,7 +74,7 @@ class Board:
 class Player:
     def __init__(self, name, cash=0):
         self.name = name
-        self.cash = 6000
+        self.cash = cash
         self.shares = []
         self.tiles = []
 
