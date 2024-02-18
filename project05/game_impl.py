@@ -615,7 +615,7 @@ player_names = ["Alice", "Bob"]
 # game = Game(board_data, player_names)
 # game.merging("B", 4, "American")
 #----------DONE TEST-----------
-
+'''
 player_state = game.generate_players_state()
 print(player_state)
 print()
@@ -631,7 +631,7 @@ print()
 game.done()
 print(game.generate_players_state())
 print()
-
+'''
 # current_state = game.generate_state()
 # print(current_state)
 
