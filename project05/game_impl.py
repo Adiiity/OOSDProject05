@@ -287,9 +287,9 @@ class Game:
                 # Different hotels among neighbors, determine acquirer and acquired
                 acquirer_label = max(unique_neighbor_hotels, key=lambda x: len(self.board.played_hotels.get(x, [])))
                 acquired_labels = [hotel for hotel in unique_neighbor_hotels if hotel != acquirer_label]
-
-
-                return {"acquirer": acquirer_label, "acquired": acquired_labels}
+                return "merging"
+                print("MERGER")
+                # return {"acquirer": acquirer_label, "acquired": acquired_labels}
 
 
     def merging(self, row, col, input_label):
@@ -379,6 +379,10 @@ class Game:
                 print("GIVEN ROW:",row,col)
                 print("Board after inspect:",self.board.board_matrix)
                 return self.founding(row,col,hotel_name,self.board.board_matrix)
+            elif(possible_action == 'merging'):
+                print("GIVEN ROW:",row,col)
+                print("Board after inspect:",self.board.board_matrix)
+                return self.merging(row,col,hotel_name)
         
     
 board_data={
@@ -391,8 +395,8 @@ board_data={
       ,{ "row": "I", "column": 1 }
     ],
     "hotels": [
-      { "hotel": "American", "tiles": [{ "row": "C", "column": 7 }] },
-      { "hotel": "Imperial", "tiles": [{ "row": "A", "column": 3 },{ "row": "C", "column": 3 }] }
+      { "hotel": "American", "tiles": [{ "row": "C", "column": 3 }] },
+      { "hotel": "Imperial", "tiles": [{ "row": "A", "column": 3 },{ "row": "C", "column":7 }] }
       
     ]
   }
@@ -414,7 +418,9 @@ game=Game(board_data)
 # grow
 # ans = game.place("B",3,"Imperial")
 # found
-ans = game.place("D",6,"Sackson")
+# ans = game.place("D",6,"Sackson")
+# merge
+ans = game.place("B",3,"American")
 print(ans)
 
 
