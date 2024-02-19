@@ -11,8 +11,8 @@ class Game:
             # get valid hotels
         self.availableHotels = self.board.valid_hotels
 
-        # self.players = []  # Initialize an empty list for players
-        # self.setup(players_data)  # Call the setup function with player names
+        self.players = []  # Initialize an empty list for players
+        self.setup(players_data)  # Call the setup function with player names
 
 
         #setup price table
@@ -38,38 +38,43 @@ class Game:
         }
 
     def setup(self, players_data):
+    # checking if players is list or dictionary (when passed in state in input)
+        if players_data and isinstance(players_data[0], dict):
 
-        player_names = []
-        for eachPlayer in players_data:
-            player_names.append(eachPlayer)
-        print(player_names)
-        # Input validation for the number of players
-        if len(player_names) > 6:
-            return {"error":"Cannot have more than 6 players."}
+            self.players = [Player(player_info["player"], player_info.get("cash", 6000)) for player_info in players_data]
+            for player, player_info in zip(self.players, players_data):
+                # setting shares and tiles from players in state if present
+                for share in player_info.get("shares", []):
+                    player.add_share(Share(share["share"], share["count"]))
+                for tile in player_info.get("tiles", []):
+                    player.add_tile(Tile(tile["row"], str(tile["column"])))
+        else:
+            # Its list when requested setup
+            player_names = players_data
+            if len(player_names) > 6:
+                raise ValueError("Cannot have more than 6 players.")
+            if len(set(player_names)) != len(player_names):
+                raise ValueError("Player names must be unique.")
 
-        # Check for duplicate player names
-        unique_player_names = set(player_names)
-        if len(player_names) != len(set(unique_player_names)):
-            return {"error":"Player names must be unique."}
+            # Initialize players with names and default cash
+            self.players = [Player(name, 6000) for name in player_names]
 
-        self.players = [Player(name, 6000) for name in player_names] # initializing the list of players
+            # define the total rows and columns based on 9*12 board setup
+            rows = [chr(r) for r in range(ord('A'), ord('I')+1)]
+            columns = list(range(1, 13))
 
-        # define the total rows and columns based on 9*12 board setup
-        rows = [chr(r) for r in range(ord('A'), ord('I')+1)]
-        columns = list(range(1, 13))
+            # Generate all possible tiles
+            all_tiles = [(row, col) for row in rows for col in columns]
 
-        # Generate all possible tiles
-        all_tiles = [(row, col) for row in rows for col in columns]
+            # Shuffle the tiles to randomize allocation
+            random.shuffle(all_tiles)
 
-        # Shuffle the tiles to randomize allocation
-        random.shuffle(all_tiles)
-
-        # Allocate 6 tiles to each player
-        for player in self.players:
-            for _ in range(6):
-                tile_data = all_tiles.pop()
-                tile = Tile(tile_data[0], tile_data[1])
-                player.add_tile(tile)
+            # Allocate 6 tiles to each player
+            for player in self.players:
+                for _ in range(6):
+                    tile_data = all_tiles.pop()
+                    tile = Tile(tile_data[0], tile_data[1])
+                    player.add_tile(tile)
 
     def generate_state(self):
         board_state = self.generate_board_state()
@@ -543,7 +548,7 @@ class Game:
 
         elif (hotel_name is not None):
             if hotel_name not in self.availableHotels:
-                return {"Error": "Invalid hotel name"} 
+                return {"Error": "Invalid hotel name"}
             print("PLACE FUNCTION -> HOTEL NAME : ",hotel_name)
             print()
             possible_action =  self.inspect(row,col)

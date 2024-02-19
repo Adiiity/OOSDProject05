@@ -21,13 +21,13 @@
           "player": "Alice",
           "cash": 6000,
           "shares": [],
-          "tiles": []
+          "tiles": [{"row": "B", "column": 2}]
         },
         {
           "player": "Bob",
           "cash": 6000,
           "shares": [],
-          "tiles": []
+          "tiles": [{"row": "D", "column": 6}]
         }
       ]
     }
