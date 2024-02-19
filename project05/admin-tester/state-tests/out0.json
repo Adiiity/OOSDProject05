@@ -1,1 +1,70 @@
-{ "data": "setup" }
+{
+  "board": {
+    "tiles": [],
+    "hotels": []
+  },
+  "players": [
+    {
+      "player": "P1",
+      "cash": 6000,
+      "shares": [],
+      "tiles": [
+        {
+          "row": "E",
+          "column": 12
+        },
+        {
+          "row": "G",
+          "column": 11
+        },
+        {
+          "row": "I",
+          "column": 7
+        },
+        {
+          "row": "D",
+          "column": 11
+        },
+        {
+          "row": "H",
+          "column": 3
+        },
+        {
+          "row": "I",
+          "column": 6
+        }
+      ]
+    },
+    {
+      "player": "P2",
+      "cash": 6000,
+      "shares": [],
+      "tiles": [
+        {
+          "row": "F",
+          "column": 4
+        },
+        {
+          "row": "A",
+          "column": 10
+        },
+        {
+          "row": "I",
+          "column": 4
+        },
+        {
+          "row": "C",
+          "column": 1
+        },
+        {
+          "row": "A",
+          "column": 7
+        },
+        {
+          "row": "I",
+          "column": 2
+        }
+      ]
+    }
+  ]
+}

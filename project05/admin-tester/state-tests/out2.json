@@ -1,165 +1,165 @@
 {
-    "board": {
-      "tiles": [
-        {
-          "row": "C",
-          "column": 3
-        },
-        {
-          "row": "A",
-          "column": 3
-        },
-        {
-          "row": "C",
-          "column": 4
-        },
-        {
-          "row": "A",
-          "column": 4
-        },
-        {
-          "row": "E",
-          "column": 3
-        },
-        {
-          "row": "E",
-          "column": 4
-        },
-        {
-          "row": "E",
-          "column": 5
-        },
-        {
-          "row": "E",
-          "column": 6
-        },
-        {
-          "row": "E",
-          "column": 7
-        },
-        {
-          "row": "E",
-          "column": 8
-        },
-        {
-          "row": "E",
-          "column": 9
-        },
-        {
-          "row": "E",
-          "column": 10
-        }
-      ],
-      "hotels": [
-        {
-          "hotel": "American",
-          "tiles": [
-            {
-              "row": "C",
-              "column": 3
-            },
-            {
-              "row": "C",
-              "column": 4
-            }
-          ]
-        },
-        {
-          "hotel": "Continental",
-          "tiles": [
-            {
-              "row": "E",
-              "column": 3
-            },
-            {
-              "row": "E",
-              "column": 4
-            },
-            {
-              "row": "E",
-              "column": 5
-            },
-            {
-              "row": "E",
-              "column": 6
-            },
-            {
-              "row": "E",
-              "column": 7
-            },
-            {
-              "row": "E",
-              "column": 8
-            },
-            {
-              "row": "E",
-              "column": 9
-            },
-            {
-              "row": "E",
-              "column": 10
-            }
-          ]
-        },
-        {
-          "hotel": "Imperial",
-          "tiles": [
-            {
-              "row": "A",
-              "column": 3
-            },
-            {
-              "row": "A",
-              "column": 4
-            }
-          ]
-        }
-      ]
-    },
-    "players": [
+  "board": {
+    "tiles": [
       {
-        "player": "P1",
-        "cash": 4600,
-        "shares": [
-          {
-            "share": "American",
-            "count": 1
-          },
-          {
-            "share": "Imperial",
-            "count": 1
-          },
-          {
-            "share": "Continental",
-            "count": 1
-          }
-        ],
+        "row": "C",
+        "column": 3
+      },
+      {
+        "row": "A",
+        "column": 3
+      },
+      {
+        "row": "C",
+        "column": 4
+      },
+      {
+        "row": "A",
+        "column": 4
+      },
+      {
+        "row": "E",
+        "column": 3
+      },
+      {
+        "row": "E",
+        "column": 4
+      },
+      {
+        "row": "E",
+        "column": 5
+      },
+      {
+        "row": "E",
+        "column": 6
+      },
+      {
+        "row": "E",
+        "column": 7
+      },
+      {
+        "row": "E",
+        "column": 8
+      },
+      {
+        "row": "E",
+        "column": 9
+      },
+      {
+        "row": "E",
+        "column": 10
+      }
+    ],
+    "hotels": [
+      {
+        "hotel": "American",
         "tiles": [
           {
-            "row": "A",
-            "column": 12
+            "row": "C",
+            "column": 3
+          },
+          {
+            "row": "C",
+            "column": 4
+          }
+        ]
+      },
+      {
+        "hotel": "Continental",
+        "tiles": [
+          {
+            "row": "E",
+            "column": 3
+          },
+          {
+            "row": "E",
+            "column": 4
+          },
+          {
+            "row": "E",
+            "column": 5
+          },
+          {
+            "row": "E",
+            "column": 6
+          },
+          {
+            "row": "E",
+            "column": 7
           },
           {
             "row": "E",
             "column": 8
           },
           {
-            "row": "H",
-            "column": 7
+            "row": "E",
+            "column": 9
           },
           {
-            "row": "G",
-            "column": 7
+            "row": "E",
+            "column": 10
+          }
+        ]
+      },
+      {
+        "hotel": "Imperial",
+        "tiles": [
+          {
+            "row": "A",
+            "column": 3
           },
           {
             "row": "A",
-            "column": 7
-          },
-          {
-            "row": "B",
-            "column": 5
+            "column": 4
           }
         ]
       }
     ]
-  }
+  },
+  "players": [
+    {
+      "player": "P1",
+      "cash": 4600,
+      "shares": [
+        {
+          "share": "American",
+          "count": 1
+        },
+        {
+          "share": "Imperial",
+          "count": 1
+        },
+        {
+          "share": "Continental",
+          "count": 1
+        }
+      ],
+      "tiles": [
+        {
+          "row": "A",
+          "column": 12
+        },
+        {
+          "row": "E",
+          "column": 8
+        },
+        {
+          "row": "H",
+          "column": 7
+        },
+        {
+          "row": "G",
+          "column": 7
+        },
+        {
+          "row": "A",
+          "column": 7
+        },
+        {
+          "row": "B",
+          "column": 5
+        }
+      ]
+    }
+  ]
+}

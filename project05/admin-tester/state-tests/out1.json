@@ -2,11 +2,67 @@
   "board": {
     "tiles": [
       {
+        "row": "B",
+        "column": 2
+      },
+      {
+        "row": "B",
+        "column": 3
+      },
+      {
+        "row": "B",
+        "column": 5
+      },
+      {
+        "row": "D",
+        "column": 6
+      },
+      {
+        "row": "C",
+        "column": 4
+      },
+      {
         "row": "E",
         "column": 7
       }
     ],
-    "hotels": []
+    "hotels": [
+      {
+        "hotel": "American",
+        "tiles": [
+          {
+            "row": "B",
+            "column": 2
+          },
+          {
+            "row": "B",
+            "column": 3
+          }
+        ]
+      },
+      {
+        "hotel": "Continental",
+        "tiles": [
+          {
+            "row": "B",
+            "column": 5
+          },
+          {
+            "row": "D",
+            "column": 6
+          }
+        ]
+      },
+      {
+        "hotel": "Imperial",
+        "tiles": [
+          {
+            "row": "C",
+            "column": 4
+          }
+        ]
+      }
+    ]
   },
   "players": [
     {

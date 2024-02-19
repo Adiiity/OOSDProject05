@@ -474,7 +474,7 @@ class Game:
             self.available_shares[share] -= 1
             # print(f"Player: {currPlayer.name} bought share of {share}")
         currState = self.generate_state()
-        print("Buy happened")
+        # print("Buy happened")
         return currState
 
 
