@@ -1,5 +1,7 @@
 # ADMIN DESIGN
 
+This part of the implementation was different from the previous one. Our admin handles the following 
+
 ### game_impl.py
 
 **New Updates**
