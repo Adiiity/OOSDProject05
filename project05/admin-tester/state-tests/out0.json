@@ -1,1 +1,132 @@
-{ "data": "setup" }
+{
+  "board": {
+    "tiles": [],
+    "hotels": []
+  },
+  "players": [
+    {
+      "player": "P1",
+      "cash": 6000,
+      "shares": [],
+      "tiles": [
+        {
+          "row": "F",
+          "column": 7
+        },
+        {
+          "row": "H",
+          "column": 7
+        },
+        {
+          "row": "C",
+          "column": 9
+        },
+        {
+          "row": "C",
+          "column": 11
+        },
+        {
+          "row": "I",
+          "column": 11
+        },
+        {
+          "row": "E",
+          "column": 9
+        }
+      ]
+    },
+    {
+      "player": "P2",
+      "cash": 6000,
+      "shares": [],
+      "tiles": [
+        {
+          "row": "B",
+          "column": 12
+        },
+        {
+          "row": "H",
+          "column": 5
+        },
+        {
+          "row": "D",
+          "column": 3
+        },
+        {
+          "row": "G",
+          "column": 7
+        },
+        {
+          "row": "F",
+          "column": 1
+        },
+        {
+          "row": "E",
+          "column": 6
+        }
+      ]
+    },
+    {
+      "player": "P3",
+      "cash": 6000,
+      "shares": [],
+      "tiles": [
+        {
+          "row": "H",
+          "column": 4
+        },
+        {
+          "row": "I",
+          "column": 7
+        },
+        {
+          "row": "I",
+          "column": 9
+        },
+        {
+          "row": "E",
+          "column": 3
+        },
+        {
+          "row": "B",
+          "column": 1
+        },
+        {
+          "row": "D",
+          "column": 1
+        }
+      ]
+    },
+    {
+      "player": "P4",
+      "cash": 6000,
+      "shares": [],
+      "tiles": [
+        {
+          "row": "B",
+          "column": 3
+        },
+        {
+          "row": "C",
+          "column": 5
+        },
+        {
+          "row": "E",
+          "column": 8
+        },
+        {
+          "row": "I",
+          "column": 4
+        },
+        {
+          "row": "B",
+          "column": 6
+        },
+        {
+          "row": "I",
+          "column": 3
+        }
+      ]
+    }
+  ]
+}
