@@ -452,7 +452,7 @@ class Game:
             if self.available_shares[share] <= 0:
                 return {"error" : "Not enough shares to purchase"}
 
-            requested_share = Share(shareLabel, 1)
+            requested_share = Share(share, 1)
             if len(currPlayer.shares) > 0:
                 share_found = False
                 print(currPlayer.shares)
