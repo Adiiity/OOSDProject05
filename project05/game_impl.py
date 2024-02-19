@@ -380,13 +380,12 @@ class Game:
                 return {"error" : "Not enough cash to purchase share"}
             if self.available_shares[share] <= 0:
                 return {"error" : "Not enough shares to purchase"}
-            requested_share = Share(shareLabel, 1)
+
+            requested_share = Share(share, 1)
             if len(currPlayer.shares) > 0:
                 share_found = False
-                print(currPlayer.shares)
                 for owned_share in currPlayer.shares:
                     if owned_share.hotel_label == requested_share.hotel_label:
-                        print(owned_share.hotel_label, requested_share.hotel_label)
                         # Player already owns the share, update the count
                         owned_share.count += 1
                         share_found = True
@@ -395,7 +394,6 @@ class Game:
                     currPlayer.add_share(requested_share)
             else:
                 currPlayer.add_share(requested_share) #init share
-            print(currPlayer.shares)
             currPlayer.cash = currPlayer.cash - price
             self.available_shares[share] -= 1
         currState = self.generate_state()
