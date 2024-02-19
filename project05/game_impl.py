@@ -435,7 +435,7 @@ class Game:
                    return price
 
 
-    def buy(self, shares: list, player_list: list):
+    def buy(self, shares: list):
         currPlayer = self.players[0]
 
         #check if count is valid
@@ -473,7 +473,7 @@ class Game:
         currPlayer = self.players[0]
         rows = 9
         columns = 12
-        if len(self.board.played_tiles) != 108: #total number of slots on board
+        if len(self.board.played_tiles) < 108: #total number of slots on board
             #generate random tile that is not on the board
             while True:
                 random_row = random.randint(0, rows - 1)
@@ -482,7 +482,9 @@ class Game:
                 random_tuple = (random_row, random_column-1)
 
                 if random_tuple not in self.board.played_tiles:
-                    break
+                    opponent_tile_check = all(random_tile not in player.tiles for player in self.players)
+                    if opponent_tile_check:
+                        break
 
             currPlayer.add_tile(random_tile)
         #currPlayer.add_tile(random_tile)
@@ -538,7 +540,7 @@ class Game:
 
         elif (hotel_name is not None):
             if hotel_name not in self.availableHotels:
-                return {"Error": "Invalid hotel name"}
+                return {"Error": "Invalid hotel name"} 
             print("PLACE FUNCTION -> HOTEL NAME : ",hotel_name)
             print()
             possible_action =  self.inspect(row,col)
@@ -596,6 +598,18 @@ board_data={
 #         {"row": "E", "column": 8},
 #         {"row": "E", "column": 9},
 #         {"row": "E", "column": 10}
+'''
+    ],
+    "hotels": [
+        {"hotel": "American", "tiles": [{"row": "C", "column": 3}, {"row": "C", "column": 4}]},
+        {"hotel": "Imperial", "tiles": [{"row": "A", "column": 3}, {"row": "A", "column": 4}]},
+        {"hotel": "Continental", "tiles": [{"row": "E", "column": 3}, {"row": "E", "column": 4}
+        ,{"row": "E", "column": 5}, {"row": "E", "column": 6}, {"row": "E", "column": 7},
+        {"row": "E", "column": 8}, {"row": "E", "column": 9}, {"row": "E", "column": 10}]}
+    ]
+}
+'''
+player_names = ["Alice", "Bob", "Jim", "Joe"]
 
 #     ],
 #     "hotels": [
@@ -606,20 +620,9 @@ board_data={
 #         {"row": "E", "column": 8}, {"row": "E", "column": 9}, {"row": "E", "column": 10}]}
 #     ]
 # }
-# player_names = ["Alice", "Bob"]
 
-#     ],
-#     "hotels": [
-#         {"hotel": "American", "tiles": [{"row": "C", "column": 3}, {"row": "C", "column": 4}]},
-#         {"hotel": "Imperial", "tiles": [{"row": "A", "column": 3}, {"row": "A", "column": 4}]},
-#         {"hotel": "Continental", "tiles": [{"row": "E", "column": 3}, {"row": "E", "column": 4}
-#         ,{"row": "E", "column": 5}, {"row": "E", "column": 6}, {"row": "E", "column": 7},
-#         {"row": "E", "column": 8}, {"row": "E", "column": 9}, {"row": "E", "column": 10}]}
-#     ]
-# }
-
-# labels = ["American", "Imperial", "Continental"]
-# print(game.buy(labels, player_names))
+ #labels = ["American", "Imperial", "Continental"]
+ #print(game.buy(labels, player_names))
 #print(game.available_shares)
 #print(game.players[0].shares)
 # Generate and print the current state of the game
@@ -627,7 +630,8 @@ board_data={
 #print(current_state)
 
 '''Merge Test Data'''
-# board_data = {
+# '''
+#board_data = {
 #     "tiles": [
 #         {"row": "B", "column": 2}, {"row": "B", "column": 3},  # American
 
@@ -643,33 +647,41 @@ board_data={
 #     ]
 # }
 # player_names = ["Alice", "Bob"]
-
+'''
 
 # game = Game(board_data, player_names)
+#-----BUY TEST-----
+#labels = ["American", "Imperial", "Continental"]
+#print(game.buy(labels))
 # game.merging("B", 4, "American")
 #----------DONE TEST-----------
+'''
 '''
 player_state = game.generate_players_state()
 print(player_state)
 print()
 game.done()
-print(game.generate_players_state())
+
+#print(game.generate_players_state())
 print()
 game.done()
-print(game.generate_players_state())
+#print(game.generate_players_state())
 print()
 game.done()
-print(game.generate_players_state())
-print()
 game.done()
-print(game.generate_players_state())
+#print(game.generate_players_state())
 print()
+print(game.players[0].tiles)
+print(game.players[1].tiles)
+print(game.players[2].tiles)
+print(game.players[3].tiles)
+'''
 '''
 # current_state = game.generate_state()
 # print(current_state)
 
-''' JAYANTH TEST DATA. DO NOT DELETE'''
-
+# JAYANTH TEST DATA. DO NOT DELETE
+'''
 # board_data={
 #     "tiles": [
 #         { "row": "D", "column":5 },
