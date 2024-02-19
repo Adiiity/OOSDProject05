@@ -197,8 +197,8 @@ class Game:
                                 # remove the label from available hotels
                                 self.availableHotels.remove(label)
 
-                                print(game.board.played_hotels)
-                                print(game.board.played_tiles)
+                                # print(game.board.played_hotels)
+                                # print(game.board.played_tiles)
                                 return "founding"
                     # If there are no available hotel chains, the player can place the tile but cannot found a new hotel
                         elif label not in self.availableHotels:
