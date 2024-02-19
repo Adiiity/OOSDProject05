@@ -30,19 +30,19 @@ def handle_request(request):
         elif request["request"] == "buy":
             response = game.buy(request["shares"])
         elif request["request"] == "done":
-            response = game.done()  # Make sure the done method exists and is implemented correctly
+            response = game.done() 
         else:
             response = {"error": "Unknown request type."}
 
     # Return the response
-    if isinstance(response, dict) and ("error" in response or "impossible" in response):
+    if isinstance(response, dict) and ("error" in response or "impossible" in response or "msg" in response):
         return response
     else:
         return game.generate_state()
 
 if __name__ == "__main__":
     try:
-        with open("admin-tester/state-tests/in2.json", 'r') as file:
+        with open("admin-tester/state-tests/in0.json", 'r') as file:
             request = json.load(file)
             response = handle_request(request)
             print(json.dumps(response, indent=2))  # Pretty print the response

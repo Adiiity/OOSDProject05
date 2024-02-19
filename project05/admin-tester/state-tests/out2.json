@@ -123,11 +123,7 @@
       "shares": [
         {
           "share": "American",
-          "count": 1
-        },
-        {
-          "share": "Imperial",
-          "count": 1
+          "count": 2
         },
         {
           "share": "Continental",

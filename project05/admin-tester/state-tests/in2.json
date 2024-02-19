@@ -1,6 +1,6 @@
 {
   "request": "buy",
-  "shares": ["American", "Imperial", "Continental"],
+  "shares": ["American", "American", "Continental"],
   "state": {
     "board": {
       "tiles": [
