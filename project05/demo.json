@@ -1,0 +1,34 @@
+{
+    "request": "place",
+    "row": "E",
+    "column": 7,
+    "hotel": "Imperial",
+    "state": {
+      "board": {
+        "tiles": [
+          {"row": "B", "column": 2}, {"row": "B", "column": 3},
+          {"row": "B", "column": 5}, {"row": "D", "column": 6},
+          {"row": "C", "column": 4}
+        ],
+        "hotels": [
+          {"hotel": "American", "tiles": [{"row": "B", "column": 2}, {"row": "B", "column": 3}]},
+          {"hotel": "Continental", "tiles": [{"row": "B", "column": 5}, {"row": "D", "column": 6}]},
+          {"hotel": "Imperial", "tiles": [{"row": "C", "column": 4}]}
+        ]
+      },
+      "players": [
+        {
+          "player": "Alice",
+          "cash": 6000,
+          "shares": [],
+          "tiles": []
+        },
+        {
+          "player": "Bob",
+          "cash": 6000,
+          "shares": [],
+          "tiles": []
+        }
+      ]
+    }
+  }
