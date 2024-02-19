@@ -1,1 +1,35 @@
-{ "data": "place" }
+{
+  "board": {
+    "tiles": [
+      {
+        "row": "E",
+        "column": 7
+      }
+    ],
+    "hotels": []
+  },
+  "players": [
+    {
+      "player": "P1",
+      "cash": 6000,
+      "shares": [],
+      "tiles": [
+        {
+          "row": "B",
+          "column": 2
+        }
+      ]
+    },
+    {
+      "player": "P2",
+      "cash": 6000,
+      "shares": [],
+      "tiles": [
+        {
+          "row": "D",
+          "column": 6
+        }
+      ]
+    }
+  ]
+}

@@ -11,6 +11,7 @@ def handle_request(request):
     elif request["request"] == "place":
         response = game.place(request["row"], request["column"], request.get("hotel"))
     elif request["request"] == "buy":
+
         response = game.buy(request["shares"], state)
     elif request["request"] == "done":
         response = game.generate_state()
@@ -26,7 +27,7 @@ def handle_request(request):
 
 if __name__ == "__main__":
     try:
-        with open("/Users/aditithakkar/Desktop/oosd-personal/OOSDProject05/project05/demo.json", 'r') as file:
+        with open("admin-tester/state-tests/in2.json", 'r') as file:
             request = json.load(file)
             response = handle_request(request)
             print(json.dumps(response, indent=2))  # Pretty print the response
