@@ -3,7 +3,6 @@ from game_library import Board,Tile,Player, Share
 import random
 class Game:
     def __init__(self,board_data,players_data=[]) -> None:
-        print("board_data",board_data)
         self.board = Board()
 
         if board_data:
@@ -11,15 +10,8 @@ class Game:
             # get valid hotels
         self.availableHotels = self.board.valid_hotels
 
-        # self.players = []  # Initialize an empty list for players
-        self.setup(players_data)
-        # Setup or Setup State based on the type of players_data
-        # if players_data is not None:
-        #     if isinstance(players_data[0], dict):
-        #         self.setup_state(players_data)
-        #     else:
-        #         self.setup(players_data)
 
+        self.setup(players_data)
 
         #setup price table
         self.hotel_tiers = {
@@ -59,10 +51,10 @@ class Game:
             # Its list when requested setup
             player_names = players_data
             if len(player_names) > 6:
-                raise ValueError("Cannot have more than 6 players.")
+                return {"error": "Cannot have more than 6 players."}
             if len(set(player_names)) != len(player_names):
-                raise ValueError("Player names must be unique.")
-
+                return {"error":"Player names must be unique."}
+            # print("players names: ",player_names)
             # Initialize players with names and default cash
             self.players = [Player(name, 6000) for name in player_names]
 
@@ -450,9 +442,6 @@ class Game:
 
 
     def buy(self, shares: list):
-        # print(self.players)
-        print("Hotels: ",self.board.played_hotels)
-        print("Players in buy: ",self.players)
         currPlayer = self.players[0]
 
 
