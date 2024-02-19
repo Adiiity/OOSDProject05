@@ -1,6 +1,10 @@
 # ADMIN DESIGN
 
-This part of the implementation was different from the previous one. Our admin handles the following
+This part of the implementation was different from the previous one. Our admin handles the following actions :  
+1. Setting the initial game.
+2. Sets up the board data.
+3. Sets up the players with 6000 cash and 6 random tiles from the pool.
+4. Handles hotel shares.
 
 ### game_impl.py
 
