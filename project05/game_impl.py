@@ -11,8 +11,8 @@ class Game:
             # get valid hotels
         self.availableHotels = self.board.valid_hotels
 
-        self.players = []  # Initialize an empty list for players
-        self.setup(players_data)  # Call the setup function with player names
+        # self.players = []  # Initialize an empty list for players
+        # self.setup(players_data)  # Call the setup function with player names
 
 
         #setup price table
@@ -39,8 +39,10 @@ class Game:
 
     def setup(self, players_data):
 
-        player_names = [player["player"] for player in players_data]
-
+        player_names = []
+        for eachPlayer in players_data:
+            player_names.append(eachPlayer)
+        print(player_names)
         # Input validation for the number of players
         if len(player_names) > 6:
             return {"error":"Cannot have more than 6 players."}
@@ -50,7 +52,7 @@ class Game:
         if len(player_names) != len(set(unique_player_names)):
             return {"error":"Player names must be unique."}
 
-        # self.players = [Player(name, 6000) for name in player_names] # initializing the list of players
+        self.players = [Player(name, 6000) for name in player_names] # initializing the list of players
 
         # define the total rows and columns based on 9*12 board setup
         rows = [chr(r) for r in range(ord('A'), ord('I')+1)]
@@ -435,7 +437,8 @@ class Game:
                    return price
 
 
-    def buy(self, shares: list):
+    def buy(self, shares: list, state: None):
+        print(self.players)
         currPlayer = self.players[0]
 
         #check if count is valid
