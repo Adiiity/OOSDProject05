@@ -50,5 +50,3 @@ if __name__ == "__main__":
         print("The file 'demo.json' was not found.")
     except json.JSONDecodeError:
         print("Error decoding JSON from 'demo.json'.")
-
-# admin-tester/state-tests/in2.json

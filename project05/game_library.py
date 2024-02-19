@@ -44,8 +44,6 @@ class Board:
                 # Directly add or update the hotel association without checking duplication
                 # Because all_tiles ensures no tile is processed more than once
                 self.add_tile_to_board(tile, hotel_name)
-        # print("played tiles: ",self.played_tiles)
-        # print("played hotels: ",self.played_hotels)
 
 
     def add_tile_to_board(self, tile, hotel_name=None):
