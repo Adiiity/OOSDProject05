@@ -86,10 +86,3 @@ class Share:
     def __init__(self, hotel_label, count):
         self.hotel_label = hotel_label
         self.count = count
-# class admin_state:
-#     def __init__(self):
-#         self.board = Board()
-#         self.players = []
-
-#     def add_player(self, player):
-#         self.players.append(player)
