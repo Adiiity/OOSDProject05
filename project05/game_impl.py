@@ -455,23 +455,39 @@ class Game:
             return {"error" : "Cannot purchase more than 3 shares"}
 
         #go through labels and purchase if possible
-        for share in shares:
-            if len(self.board.played_hotels[share]) < 2:
+        for shareLabel in shares:
+            if len(self.board.played_hotels[shareLabel]) < 2:
                 #print("Short hotel worked")
                 # print(self.board.played_hotels)
                 return {"error" : "Not valid hotel to purchase shares of"}
-            price = self.getHotelPrice(share)
+            price = self.getHotelPrice(shareLabel)
             #print(share, price)
             if currPlayer.cash < price:
                 #print("less cash worked")
                 return {"error" : "Not enough cash to purchase share"}
-            if self.available_shares[share] <= 0:
+            if self.available_shares[shareLabel] <= 0:
                 #print("0 worked ")
                 return {"error" : "Not enough shares to purchase"}
 
-            currPlayer.add_share(Share(share, 1)) #init share
+            requested_share = Share(shareLabel, 1)
+            if len(currPlayer.shares) > 0:
+                share_found = False
+                print(currPlayer.shares)
+                for owned_share in currPlayer.shares:
+                    if owned_share.hotel_label == requested_share.hotel_label:
+                        print(owned_share.hotel_label, requested_share.hotel_label)
+                        # Player already owns the share, update the count
+                        owned_share.count += 1
+                        share_found = True
+                        break
+                if not share_found:
+                    currPlayer.add_share(requested_share)
+            else:
+                currPlayer.add_share(requested_share) #init share
+            print(currPlayer.shares)
             currPlayer.cash = currPlayer.cash - price
-            self.available_shares[share] -= 1
+            print(shareLabel)
+            self.available_shares[shareLabel] -= 1
             # print(f"Player: {currPlayer.name} bought share of {share}")
         currState = self.generate_state()
         print("Buy happened")
