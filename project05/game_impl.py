@@ -3,7 +3,7 @@ from game_library import Board,Tile,Player, Share
 import random
 class Game:
     def __init__(self,board_data,players_data=[]) -> None:
-
+        print("board_data",board_data)
         self.board = Board()
 
         if board_data:
@@ -11,8 +11,14 @@ class Game:
             # get valid hotels
         self.availableHotels = self.board.valid_hotels
 
-        self.players = []  # Initialize an empty list for players
-        self.setup(players_data)  # Call the setup function with player names
+        # self.players = []  # Initialize an empty list for players
+        self.setup(players_data)
+        # Setup or Setup State based on the type of players_data
+        # if players_data is not None:
+        #     if isinstance(players_data[0], dict):
+        #         self.setup_state(players_data)
+        #     else:
+        #         self.setup(players_data)
 
 
         #setup price table
@@ -38,16 +44,17 @@ class Game:
         }
 
     def setup(self, players_data):
-    # checking if players is list or dictionary (when passed in state in input)
-        if players_data and isinstance(players_data[0], dict):
-
-            self.players = [Player(player_info["player"], player_info.get("cash", 6000)) for player_info in players_data]
-            for player, player_info in zip(self.players, players_data):
-                # setting shares and tiles from players in state if present
-                for share in player_info.get("shares", []):
-                    player.add_share(Share(share["share"], share["count"]))
-                for tile in player_info.get("tiles", []):
-                    player.add_tile(Tile(tile["row"], str(tile["column"])))
+        self.players = []  # Clear existing players list
+        if isinstance(players_data, list) and players_data and isinstance(players_data[0], dict):
+            # Load from state (dictionary input)
+            for player_info in players_data:
+                player = Player(player_info["player"], player_info.get("cash", 6000))
+                # Assume add_share and add_tile methods exist to properly add shares and tiles
+                for share_info in player_info.get("shares", []):
+                    player.add_share(Share(share_info["share"], share_info["count"]))
+                for tile_info in player_info.get("tiles", []):
+                    player.add_tile(Tile(tile_info["row"], str(tile_info["column"])))
+                self.players.append(player)
         else:
             # Its list when requested setup
             player_names = players_data
@@ -442,10 +449,12 @@ class Game:
                    return price
 
 
-    def buy(self, shares: list, state: None):
+    def buy(self, shares: list):
         # print(self.players)
-        print(self.board.played_hotels)
+        print("Hotels: ",self.board.played_hotels)
+        print("Players in buy: ",self.players)
         currPlayer = self.players[0]
+
 
         #check if count is valid
         shareCount = len(shares)
@@ -476,6 +485,7 @@ class Game:
             self.available_shares[share] -= 1
             # print(f"Player: {currPlayer.name} bought share of {share}")
         currState = self.generate_state()
+        print("Buy happened")
         return currState
 
 
