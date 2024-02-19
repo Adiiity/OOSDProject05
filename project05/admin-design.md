@@ -1,3 +1,5 @@
+# ADMIN DESIGN
+
 ### game_impl.py
 
 **New Updates**
@@ -21,9 +23,13 @@
 1. Hotel class is removed.
 2. Share class is introduced.
 
-**Testing**
+
+**Board Representation**
+
+### Client.py
+1. We completely changed how our client structure should be from the previous assignment due to change is request structures.
+
+### Testing
 
 1. We moved from pytest to unittest because we felt that its more easier to write multiple test functions into the same python file with unittest rather creating n number of test scripts.
 2. To run tests, use the following command "python3 tester.py".
-
-**Board Representation**
